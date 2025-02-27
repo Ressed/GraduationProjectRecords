@@ -270,3 +270,21 @@ mount还没实现所以没法测openat
 
 # 2/27
 
+在比赛平台 gitlab 上创建了仓库，之后在这里提交修改。
+
+创建在线文档 https://github.com/Ressed/GraduationProjectRecords ，把之前的 note 迁移过来
+
+看 openat 测例的实现
+
+```
+TEST_START(__func__);
+//int fd_dir = open(".", O_RDONLY | O_CREATE);
+int fd_dir = open("./mnt", O_DIRECTORY);
+printf("open dir fd: %d\n", fd_dir);
+int fd = openat(fd_dir, "test_openat.txt", O_CREATE | O_RDWR);
+printf("openat fd: %d\n", fd);
+assert(fd > 0);
+printf("openat success.\n");
+```
+
+这个 ./mnt 是哪来的呢
