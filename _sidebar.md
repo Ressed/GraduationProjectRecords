@@ -7,16 +7,21 @@
   * [littlefs源码理解](./docs/研发日志/littlefs源码理解.md)
   * [lfs-utils的移植](./docs/研发日志/lfs-utils的移植.md) -->
 
-* 周报
+* 周报（秋季学期）
 
-    [Week1 (12.09)](<docs/weekly/Week1 (12.09).md>)
+    [Week1 (12.09)](<docs/fall/Week1 (12.09).md>)
 
-    [Week2 (12.16)](<docs/weekly/Week2 (12.16).md>)
+    [Week2 (12.16)](<docs/fall/Week2 (12.16).md>)
 
-    [Week3-4 (12.30)](<docs/weekly/Week3-4 (12.30).md>)
+    [Week3-4 (12.30)](<docs/fall/Week3-4 (12.30).md>)
 
-    [Week5-6 (01.13)](<docs/weekly/Week5-6 (01.13).md>)
+    [Week5-6 (1.13)](<docs/fall/Week5-6 (01.13).md>)
+
+* 周报（春季学期）
+    
+    [Week0 (2.17)](<docs/spring/Week0 (2.17).md>)
+    
+    [Week1 (2.24)](<docs/spring/Week1 (2.24).md>)
 
 
-* 未经整理的日报
-    [日报](<docs/daily/note.md>)
+* [日报](<docs/daily/note.md>)
