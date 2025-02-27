@@ -4,8 +4,8 @@
 
 完成starry-next的环境配置：
 
-![alt text](<../../assets/Week1 (12.09)/image.png>)
+![](<../../assets/Week1 (12.09)/image.png>)
 
-![alt text](<../../assets/Week1 (12.09)/image-1.png>)
+![](<../../assets/Week1 (12.09)/image-1.png>)
 
-![alt text](<../../assets/Week1 (12.09)/image-2.png>)
+![](<../../assets/Week1 (12.09)/image-2.png>)

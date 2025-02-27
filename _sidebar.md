@@ -9,18 +9,14 @@
 
 * 周报
 
-    [Week1 (12.09).md](<docs/周报/Week1 (12.09).md>)
-    [Week2 (12.16).md](<docs/周报/Week2 (12.16).md>)
-    [Week3-4 (12.30).md](<docs/周报/Week3-4 (12.30).md>)
-    [Week5-6 (01.13).md](<docs/周报/Week5-6 (01.13).md>)
+    [Week1 (12.09)](<docs/weekly/Week1 (12.09).md>)
+
+    [Week2 (12.16)](<docs/weekly/Week2 (12.16).md>)
+
+    [Week3-4 (12.30)](<docs/weekly/Week3-4 (12.30).md>)
+
+    [Week5-6 (01.13)](<docs/weekly/Week5-6 (01.13).md>)
+
 
 * 未经整理的日报
-    
-
-<!-- * 技术文档
-  
-  * [littlefs_DESIGN_zh](./docs/技术文档/littlefs_DESIGN_zh.md)
-  * [littlefs_SPEC_zh](./docs/技术文档/littlefs_SPEC_zh.md)
-  * [littlefs代码分析—lfs_util](./docs/技术文档/littlefs代码分析—lfs_util.md)
-  * [littlefs代码分析—lfs.h](./docs/技术文档/littlefs代码分析—lfs.h.md)
-  * [littlefs代码分析—lfs.c](./docs/技术文档/littlefs代码分析—lfs.c) -->
+    [日报](<docs/daily/note.md>)

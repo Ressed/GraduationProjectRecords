@@ -7,7 +7,7 @@
 # 12/7
 
 仓库地址 https://github.com/Ressed/Starry-On-ArceOS/tree/main 遵照readme能跑起来
-![alt text](../../assets/note/image.png)
+![](../../assets/note/image.png)
 
 
 ArceOS宏内核实践资料 https://thu-sast9.feishu.cn/docx/ICf2dVcZ5ouH86x2G2oc4GFlnCd
@@ -58,7 +58,7 @@ https://course.educg.net/sv2/indexexp/contest/contest_submit.jsp?contestID=UWCKU
 
 docker pull docker.educg.net/ai4s/os-contest:20250214
 
-![alt text](../../assets/note/image-1.png)
+![](../../assets/note/image-1.png)
 
 # 2/16
 
@@ -66,12 +66,12 @@ cp ~/riscv64-linux-musl-cross/bin/riscv64-linux-musl-gcc ~/riscv64-linux-musl-cr
 
 git clone https://gitlab.eduxiji.net/Azure_stars/starry-next/-/tree/4c6903790285a39e6f29933c63739f8185a18b8a
 
-![alt text](../../assets/note/image-2.png)
+![](../../assets/note/image-2.png)
 
 
 
 git clone https://github.com/oscomp/testsuits-for-oskernel/tree/pre-2025
-![alt text](../../assets/note/image-3.png)
+![](../../assets/note/image-3.png)
 在docker里构建出了两个img
 
 
@@ -105,10 +105,10 @@ docker exec -it -u root arceos_env bash
 # 2/18
 
 只有riscv64运行时显示是这样
-![alt text](../../assets/note/image-4.png)
+![](../../assets/note/image-4.png)
 
 别的都是这样
-![alt text](../../assets/note/image-5.png)
+![](../../assets/note/image-5.png)
 
 不知道为什么
 
@@ -125,7 +125,7 @@ CMake Error: The source "/starry-next/apps/nimbos/c/CMakeLists.txt" does not mat
 不知道什么时候在settings里给rust-analyzer加的features=[axstd,alloc]导致rust-analyzer报错，删了。
 
 run了个评测环境的镜像cool_lumiere，尝试在里面用starry-next跑starry-next-gitlab里的junior，失败。
-![alt text](../../assets/note/image-6.png)
+![](../../assets/note/image-6.png)
 
 在arceos的docker里可以运行：
 ```
@@ -147,7 +147,7 @@ debug!输出 CStr::from_ptr(path) 时会卡死
 
     因为sbi不能直接访问用户态的地址 riscv64 调用输出的是用 SBI 先把这个内存拷贝到内核里面的数组
 
-![alt text](../../assets/note/image-7.png)
+![](../../assets/note/image-7.png)
 
 https://github.com/oscomp/os-competition-info/blob/main/ref-info.md
 
@@ -161,33 +161,33 @@ https://github.com/oscomp/os-competition-info/blob/main/ref-info.md
     - 如何在 OS 比赛平台上测试 Starry 的说明：https://azure-stars.github.io/Starry-Tutorial-Book/ch01-00.html
   
 在线评测结果
-![alt text](../../assets/note/image-8.png)
+![](../../assets/note/image-8.png)
 
 
 先编译testsuits
-![alt text](../../assets/note/image-13.png)
+![](../../assets/note/image-13.png)
 
 在docker里运行模拟评测
 
-![alt text](../../assets/note/image-14.png)
+![](../../assets/note/image-14.png)
 
-![alt text](../../assets/note/image-10.png)
+![](../../assets/note/image-10.png)
 
-![alt text](../../assets/note/image-11.png)
+![](../../assets/note/image-11.png)
 
 
 testsuits的makefile有问题 sdcard里把loongarch写成riscv64了
 
 修改后
 
-![alt text](../../assets/note/image-12.png)
+![](../../assets/note/image-12.png)
 
 
 在更新后的github仓库运行
 
-![alt text](../../assets/note/image-15.png)
+![](../../assets/note/image-15.png)
 
-![alt text](../../assets/note/image-16.png)
+![](../../assets/note/image-16.png)
 有问题。
 
 
@@ -207,7 +207,7 @@ $ make AX_TESTCASE=oscomp ARCH=riscv64 EXTRA_CONFIG=../configs/riscv64.toml BLK=
 
 能跑 大概以后在这上写了。
 
-![alt text](../../assets/note/image-17.png)
+![](../../assets/note/image-17.png)
 
 把旧的junior的testcase_list，加上前缀添加进来，尝试运行
 
@@ -253,7 +253,7 @@ clone后会导致后续测例卡死
 用户名 T202410003995072  ec
 
 
-![alt text](../../assets/note/image-18.png)
+![](../../assets/note/image-18.png)
 
 openat依然是坏的：对于相对地址的openat 尝试打开的却是绝对地址
 

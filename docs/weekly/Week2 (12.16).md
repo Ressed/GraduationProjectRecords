@@ -2,4 +2,4 @@
 
 starry-next成功加载初赛测例：
                
-![alt text](<../../assets/Week2 (12.16)/image.png>)
+![](<../../assets/Week2 (12.16)/image.png>)
