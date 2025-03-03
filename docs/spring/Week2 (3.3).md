@@ -76,15 +76,14 @@ make AX_TESTCASE=junior ARCH=riscv64 EXTRA_CONFIG=../configs/riscv64.toml BLK=y 
 
 修复：重新编译。
 
+### pipe
+
+问题：sys_clone 无法正常使用。
+
+修复：已将 clone 的修复合并
 
 ### mount, umount
 
 问题：尚未实现 sys_mount。
 
 修复：正在实现中。
-
-### pipe
-
-问题：sys_clone 无法正常使用。
-
-修复：正在准备合并。
