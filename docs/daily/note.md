@@ -212,39 +212,39 @@ $ make AX_TESTCASE=oscomp ARCH=riscv64 EXTRA_CONFIG=../configs/riscv64.toml BLK=
 把旧的junior的testcase_list，加上前缀添加进来，尝试运行
 
 ```
-./musl/basic/brk
-./musl/basic/chdir
-./musl/basic/clone
-./musl/basic/close
-./musl/basic/dup
-./musl/basic/dup2
-./musl/basic/execve
-./musl/basic/exit
-./musl/basic/fork
-./musl/basic/fstat
-./musl/basic/getcwd
-./musl/basic/getdents
-./musl/basic/getpid
-./musl/basic/getppid
-./musl/basic/gettimeofday
-./musl/basic/mkdir_
-./musl/basic/mmap
-./musl/basic/mount
-./musl/basic/munmap
-./musl/basic/open
-./musl/basic/openat
-./musl/basic/pipe
-./musl/basic/read
-./musl/basic/sleep
-./musl/basic/test_echo
-./musl/basic/times
-./musl/basic/umount
-./musl/basic/uname
-./musl/basic/unlink
-./musl/basic/wait
-./musl/basic/waitpid
-./musl/basic/write
-./musl/basic/yield
+/musl/basic/brk
+/musl/basic/chdir
+/musl/basic/clone
+/musl/basic/close
+/musl/basic/dup
+/musl/basic/dup2
+/musl/basic/execve
+/musl/basic/exit
+/musl/basic/fork
+/musl/basic/fstat
+/musl/basic/getcwd
+/musl/basic/getdents
+/musl/basic/getpid
+/musl/basic/getppid
+/musl/basic/gettimeofday
+/musl/basic/mkdir_
+/musl/basic/mmap
+/musl/basic/mount
+/musl/basic/munmap
+/musl/basic/open
+/musl/basic/openat
+/musl/basic/pipe
+/musl/basic/read
+/musl/basic/sleep
+/musl/basic/test_echo
+/musl/basic/times
+/musl/basic/umount
+/musl/basic/uname
+/musl/basic/unlink
+/musl/basic/wait
+/musl/basic/waitpid
+/musl/basic/write
+/musl/basic/yield
 ```
 
 clone后会导致后续测例卡死
@@ -287,4 +287,100 @@ assert(fd > 0);
 printf("openat success.\n");
 ```
 
-这个 ./mnt 是哪来的呢
+应该要修改测例加入一个 ./mnt 目录
+
+评测报错：
+![](../../assets/note/image-19.png)
+
+下一步 实现 mount
+
+# 2/28
+
+完成情况
+
+```
+/musl/basic/chdir P
+/musl/basic/close P
+/musl/basic/dup P
+/musl/basic/dup2 F
+/musl/basic/fstat F
+/musl/basic/getcwd P
+/musl/basic/getdents F
+/musl/basic/mkdir_ P
+/musl/basic/mount F
+/musl/basic/open P
+/musl/basic/openat F
+/musl/basic/pipe F
+/musl/basic/read T
+/musl/basic/umount F
+/musl/basic/unlink T
+/musl/basic/write T
+```
+
+
+```
+Testing fstat: 
+qemu-system-riscv64: wrong value for queue_enable ffffffc0
+```
+
+
+尝试使用gdb：
+```
+make AX_TESTCASE=junior ARCH=riscv64 EXTRA_CONFIG=../configs/riscv64.toml BLK=y NET=y FEATURES=fp_simd,lwext4_rs LOG=info MODE=debug debug
+```
+
+在 cargo.mk 的 RUSTFLAGS里 加上-g，把makefile 的 MODE 默认改为 debug，make clean后重新执行，可以正常打断点。
+
+加了调试信息后跑的好慢
+
+
+#### openat
+
+![](../../assets/note/image-20.png)
+
+有锁冲突 把一个的作用域改小了
+
+O_DIRECTORY 到底应该是多少？
+
+mnt被当作文件了，即使有O_DIRECTORY：
+
+![](../../assets/note/image-21.png)
+
+这是因为 O_DIRECTORY 定义不一致？
+
+![](../../assets/note/image-22.png)
+
+![](../../assets/note/image-23.png)
+
+先把ctypes_gen里的改成0x0200000了。openat, fstat通过。
+
+
+# 3/2
+
+
+### getdents
+
+依然是把目录当成文件了
+
+![](../../assets/note/image-26.png)
+
+注释掉了File.open里的这一行，只要是dir就error
+
+![](../../assets/note/image-27.png)
+
+通过
+
+
+### dup2
+
+之前好像.img坏了 重新编译了一份就好了
+
+
+### pipe
+
+sys_clone 报错
+
+![alt text](../../assets/note/image-24.png)
+
+
+### mount
