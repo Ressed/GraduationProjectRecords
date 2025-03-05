@@ -370,17 +370,53 @@ mnt被当作文件了，即使有O_DIRECTORY：
 
 通过
 
+TODO: 不要修改arceos，应该在上面改
+
 
 ### dup2
 
 之前好像.img坏了 重新编译了一份就好了
 
 
+# 3/3
+
 ### pipe
 
 sys_clone 报错
 
-![alt text](../../assets/note/image-24.png)
+![](../../assets/note/image-24.png)
+
+已将clone的修复合并
 
 
 ### mount
+
+定义了下sys_mount和sys_umount
+
+
+# 3/4
+
+### 在loongarch上测试，fstat过不去：
+
+去掉assert的话完全是正常的，但就是assert fatal
+
+![](../../assets/note/image-29.png)
+
+![](../../assets/note/image-28.png)
+
+
+怀疑是上面 axmm 那个warn的问题，可能导致用户程序看到的值和内核看到的值不一样。
+
+并非，只是测例的syscall没返回 res
+
+![](../../assets/note/image-31.png)
+
+
+### execve
+
+![](../../assets/note/6235d14397a9ae35e5c133fb208a5e1.png)
+
+把相对路径改成绝对路径
+
+![](../../assets/note/image-32.png)
+
