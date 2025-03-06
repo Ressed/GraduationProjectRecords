@@ -371,6 +371,7 @@ mnt被当作文件了，即使有O_DIRECTORY：
 通过
 
 TODO: 不要修改arceos，应该在上面改
+    不是注释掉，而是在后面加上个 opts.read 是否可行？
 
 
 ### dup2
@@ -419,4 +420,33 @@ sys_clone 报错
 把相对路径改成绝对路径
 
 ![](../../assets/note/image-32.png)
+
+# 3/5
+
+从 yyy-dev 合并代码，riscv 下可以正常运行 execve
+
+参考 starry-new 完成 mount 和 umount
+
+
+# 3/6
+
+从github合并修改
+
+```
+git add remote github ...
+git log  github/main --oneline
+git cherry-pick 478ec2f
+git cherry-pick b5920b2
+```
+
+已通过全部basic测例在riscv64上，运行结果在basic-rv.out
+
+loongarch 的 clone 相关测例出问题
+
+![](../../assets/note/image-33.png)
+
+把这个改回去就能对 不知道为什么
+
+
+git可能以为我在windows下，把所有的LF给换成CRLF了，导致修改到vendors里的文件时，产生了checksum不一致。通过设置把core.autocrlf设为false解决。
 
