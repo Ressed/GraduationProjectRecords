@@ -15,3 +15,5 @@ https://github.com/oscomp/starry-next/tree/zg-dev
 尝试参考Starry中的axfs和修复：
 
 https://github.com/Starry-OS/Starry-Old/blob/53c549aa1e2ebe22b27ec8c474df041faf0ef4b7/modules/axfs/src/fs/ext4_rs.rs
+
+https://github.com/Starry-OS/Starry-Old/blob/53c549aa1e2ebe22b27ec8c474df041faf0ef4b7/modules/axfs/src/fs/another_ext4.rs
