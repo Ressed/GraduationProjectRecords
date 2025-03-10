@@ -25,5 +25,7 @@
 
     [Week2 (3.3)](<docs/spring/Week2 (3.3).md>)
 
+    [Week3 (3.10)](<docs/spring/Week3 (3.10).md>)
+
 
 * [日报](<docs/daily/note.md>)

@@ -450,3 +450,70 @@ loongarch 的 clone 相关测例出问题
 
 git可能以为我在windows下，把所有的LF给换成CRLF了，导致修改到vendors里的文件时，产生了checksum不一致。通过设置把core.autocrlf设为false解决。
 
+cargo vendor 下下来的lwext crate 的EOL是CRLF，很奇怪
+
+# 3/9
+
+迁移修改到 github 
+
+```
+git add --renormalize .
+sed -i 's/\r$//g' xxx
+```
+
+之前clone的仓库都有core.autocrlf=true 并且会导致文件被变成crlf的错误
+    好像反而是仓库有问题，就是应该设成true?
+
+读不到测例？
+    testcase_list 的 crlf导致的
+
+成功迁移了对openat的修改，但clone因为其他人改动太多不知道为什么还是不行。
+
+
+# 3/10
+
+神秘问题：只有我的riscv64 clone会panic:
+    ![](../../assets/note/image-34.png)
+
+重新起个docker试试
+
+```
+docker run --privileged --rm -it -v $(pwd):$(pwd) -w $(pwd) --name arceos_env arceos bash
+```
+
+不用了，改用 AsakuraMizu/arceos 就好了，riscv64下所有basic样例都能过
+
+# test ext4 crates
+
+.arceos# git checkout -b test_ext4  
+
+https://github.com/oscomp/os-competition-info/blob/main/ref-info.md#ext4%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%8F%82%E8%80%83%E5%AE%9E%E7%8E%B0 
+
+### Azure-stars/lwext4_rust
+
+### yuoo655/ext4_rs
+
+加入feature ext4_rs
+
+尝试运行
+
+```
+git clone https://github.com/yuoo655/ext4libtest.git
+cd ext4libtest
+sh gen_img.sh
+# cargo run /path/to/mountpoint
+cargo run ./foo/
+```
+
+![](../../assets/note/image-35.png)
+
+sudo apt-get install fuse3 libfuse3-dev
+
+![](../../assets/note/image-36.png)
+
+
+参考文档： https://github.com/Starry-OS/Starry/blob/d2f795624b73f35159e68369cf9fef542a025ee6/doc/ext4fs.md?plain=1#L10
+
+https://github.com/Starry-OS/Starry-Old/blob/53c549aa1e2ebe22b27ec8c474df041faf0ef4b7/modules/axfs/src/fs/ext4_rs.rs#L4
+
+### PKTH-Jx/another_ext4
