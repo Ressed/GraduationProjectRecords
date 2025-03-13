@@ -550,3 +550,7 @@ https://github.com/Starry-OS/Starry-Old/blob/53c549aa1e2ebe22b27ec8c474df041faf0
 换到commit 86d77d3 变了一种报错
 
 ![](../../assets/note/image-41.png)
+
+# 3/13
+
+尝试采用最新版本并修改 ext4_rs.rs
