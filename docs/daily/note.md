@@ -472,7 +472,7 @@ sed -i 's/\r$//g' xxx
 
 # 3/10
 
-神秘问题：只有我的riscv64 clone会panic:
+SMP=1 riscv64 clone会panic:
     ![](../../assets/note/image-34.png)
 
 重新起个docker试试
@@ -482,6 +482,8 @@ docker run --privileged --rm -it -v $(pwd):$(pwd) -w $(pwd) --name arceos_env ar
 ```
 
 不用了，改用 AsakuraMizu/arceos 就好了，riscv64下所有basic样例都能过
+
+应该是测例更新导致的，换用之前编译好的测例也能在main下通过。
 
 # test ext4 crates
 
@@ -517,3 +519,34 @@ sudo apt-get install fuse3 libfuse3-dev
 https://github.com/Starry-OS/Starry-Old/blob/53c549aa1e2ebe22b27ec8c474df041faf0ef4b7/modules/axfs/src/fs/ext4_rs.rs#L4
 
 ### PKTH-Jx/another_ext4
+
+
+:: 这两个目前没有接入的ext4 crate 可能存在bug， 可以分析他们的情况，作为毕设工作的一部分
+
+# 3/11
+
+对比 Starry-Old/lwext4_rust.rs 和 现在的 似乎只有logging上有区别
+
+那为什么直接把 ext4_rs.rs 搬过来不行呢？
+
+![](../../assets/note/image-37.png)
+
+改用  rev= "6bcc7f5" 的话 可以成功编译，但不识别现有的.img
+
+# 3/12
+
+在创建.img 时，给 mkfs.ext4 加上参数 -b 4096，可以成功在 ext4_rs/main 中读取sdcard-rv.img
+
+更新 testsuits-for-oskernel 到 2025_multiarch 分支，加上 -b 4096 参数编译测例
+
+卡死
+![](../../assets/note/image-38.png)
+
+改用MODE=debug后又不卡死了？但是会panic
+
+![](../../assets/note/image-40.png)
+![](../../assets/note/image-39.png)
+
+换到commit 86d77d3 变了一种报错
+
+![](../../assets/note/image-41.png)
