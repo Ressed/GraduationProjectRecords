@@ -554,3 +554,117 @@ https://github.com/Starry-OS/Starry-Old/blob/53c549aa1e2ebe22b27ec8c474df041faf0
 # 3/13
 
 尝试采用最新版本并修改 ext4_rs.rs
+
+TODO:
+
+    优先做libc-test syscall，让ci测一下所有的basic 测例 文件相关的
+
+    Linux-UNIX 系统编程手册
+
+    按syscall分，写 syscall 手动编写测例测试
+
+    testcases/test_syscall_code/
+
+
+# 3/15
+
+目前的starry/main + arceos/main 没法编译，等待pr。
+
+# 3/16
+
+目前main下文件相关basic通过情况
+
+```
+target_testcases = [
+    "test_brk",
+    "test_chdir",
+    "test_execve",
+    "test_close",
+    "test_dup",
+    "test_dup2",
+    "test_fstat",
+    "test_getcwd",
+    "test_mkdir",
+    "test_open",
+    "test_pipe",
+    "test_read",
+    "test_unlink",
+    "test_write",
+    # "test_openat",
+    # "test_getdents",
+    # "test_mount",
+    # "test_umount",
+]
+```
+
+其中注释掉的为未通过。
+
+等待 pr fix: open directory #19 合并
+
+分工： https://docs.qq.com/sheet/DWmZZenJ6dk9VQ2tr?tab=BB08J2
+
+test_pipe 有时会不通过：
+
+
+结果随机：
+```
+========== START test_pipe ==========
+cpid: cpid: 0
+11
+  Write to pipe successfully.
+
+========== END test_pipe ==========
+
+========== START test_pipe ==========
+cpid: 11
+cpid: 0
+  Write to pipe successfully.
+
+========== END test_pipe ==========
+
+========== START test_pipe ==========
+cpid: cpid: 11
+0
+  Write to pipe successfully.
+
+========== END test_pipe ==========
+
+========== START test_pipe ==========
+cpid: 0
+cpid: 11
+  Write to pipe successfully.
+
+========== END test_pipe ==========
+```
+
+# 3/17
+
+##### 目前通过ci的文件相关 basic 测例：
+
+|                              | **riscv64** | **x86_64** | **aarch64** | **loongarch64** |
+| ---------------------------- | ----------- | ---------- | ----------- | --------------- |
+| **chdir**          | ✅           | ✅          | ✅           | ✅               |
+| **close**        | ✅           | ✅          | ✅           | ✅               |
+| **dup**        | ✅           | ✅          | ✅           | ✅               |
+| **dup2**       | ✅           | ✅          | ✅           | ✅               |
+| **fstat**      | ✅           | ✅          | ✅           | ✅               |
+| **getcwd**         | ✅           | ✅          | ✅           | ✅               |
+| **mkdir_**       | ✅           | ✅          | ✅           | ✅               |
+| **open**      | ✅           | ✅          | ✅           | ✅               |
+| **read**        | ✅           | ✅          | ✅           | ✅               |
+| **unlink** | ✅           | ✅          | ✅           | ✅               |
+| **write**        | ✅           | ✅          | ✅           | ✅               |
+| **openat**        | ✅           | ✅          | ✅           | ✅               |
+| **getdents**         | ✅           | ✅          | ✅           | ✅               |
+| **pipe**        | ✅           | ✅          | ✅           | ✅               |
+| **mount**        |            |           |            |                |
+| **umount**         |            |           |            |                |
+
+提了个PR修复basic judge 相关问题 https://github.com/oscomp/starry-next/pull/15
+
+mount 还没迁移
+
+尝试运行 libctest 的 fdopen
+
+![](../../assets/note/image-43.png)
+
