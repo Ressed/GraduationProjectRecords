@@ -668,3 +668,33 @@ mount 还没迁移
 
 ![](../../assets/note/image-43.png)
 
+
+# 3/20
+
+创建 apps/tests/
+
+test_open，先使用 std
+```
+void test_open() {
+	// O_RDONLY = 0, O_WRONLY = 1
+	FILE *fd = fopen("./text.txt", "r");
+	assert(fd >= 0);
+	char buf[256];
+	int size = fread(buf, 256, 1, fd);
+	if (size < 0) {
+		size = 0;
+	}
+    puts(buf);
+	fclose(fd);
+}
+```
+
+编译到build/里，然后进行打包，因为要进行 mount ，所以只能在现在的容器外跑
+
+```
+sudo ./build_img.sh -a x86_64 -fs ext4 -file apps/tests/build/ -s 30
+```
+
+以正常方式运行
+
+等待 arceos 恢复正常
