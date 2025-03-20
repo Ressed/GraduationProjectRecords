@@ -697,4 +697,4 @@ sudo ./build_img.sh -a x86_64 -fs ext4 -file apps/tests/build/ -s 30
 
 以正常方式运行
 
-等待 arceos 恢复正常
+![](../../assets/note/image-44.png)
