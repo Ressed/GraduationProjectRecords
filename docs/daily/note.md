@@ -641,24 +641,24 @@ cpid: 11
 
 ##### 目前通过ci的文件相关 basic 测例：
 
-|                              | **riscv64** | **x86_64** | **aarch64** | **loongarch64** |
-| ---------------------------- | ----------- | ---------- | ----------- | --------------- |
-| **chdir**          | ✅           | ✅          | ✅           | ✅               |
-| **close**        | ✅           | ✅          | ✅           | ✅               |
-| **dup**        | ✅           | ✅          | ✅           | ✅               |
-| **dup2**       | ✅           | ✅          | ✅           | ✅               |
-| **fstat**      | ✅           | ✅          | ✅           | ✅               |
-| **getcwd**         | ✅           | ✅          | ✅           | ✅               |
-| **mkdir_**       | ✅           | ✅          | ✅           | ✅               |
-| **open**      | ✅           | ✅          | ✅           | ✅               |
-| **read**        | ✅           | ✅          | ✅           | ✅               |
-| **unlink** | ✅           | ✅          | ✅           | ✅               |
-| **write**        | ✅           | ✅          | ✅           | ✅               |
-| **openat**        | ✅           | ✅          | ✅           | ✅               |
-| **getdents**         | ✅           | ✅          | ✅           | ✅               |
-| **pipe**        | ✅           | ✅          | ✅           | ✅               |
-| **mount**        |            |           |            |                |
-| **umount**         |            |           |            |                |
+|              | **riscv64** | **x86_64** | **aarch64** | **loongarch64** |
+| ------------ | ----------- | ---------- | ----------- | --------------- |
+| **chdir**    | ✅           | ✅          | ✅           | ✅               |
+| **close**    | ✅           | ✅          | ✅           | ✅               |
+| **dup**      | ✅           | ✅          | ✅           | ✅               |
+| **dup2**     | ✅           | ✅          | ✅           | ✅               |
+| **fstat**    | ✅           | ✅          | ✅           | ✅               |
+| **getcwd**   | ✅           | ✅          | ✅           | ✅               |
+| **mkdir_**   | ✅           | ✅          | ✅           | ✅               |
+| **open**     | ✅           | ✅          | ✅           | ✅               |
+| **read**     | ✅           | ✅          | ✅           | ✅               |
+| **unlink**   | ✅           | ✅          | ✅           | ✅               |
+| **write**    | ✅           | ✅          | ✅           | ✅               |
+| **openat**   | ✅           | ✅          | ✅           | ✅               |
+| **getdents** | ✅           | ✅          | ✅           | ✅               |
+| **pipe**     | ✅           | ✅          | ✅           | ✅               |
+| **mount**    |             |            |             |                 |
+| **umount**   |             |            |             |                 |
 
 提了个PR修复basic judge 相关问题 https://github.com/oscomp/starry-next/pull/15
 
@@ -698,3 +698,202 @@ sudo ./build_img.sh -a x86_64 -fs ext4 -file apps/tests/build/ -s 30
 以正常方式运行
 
 ![](../../assets/note/image-44.png)
+
+# 3/21
+
+将之前实现的mount, umount 合入并提交 pr
+
+添加函数 ignore_unimplement_syscall，以屏蔽其他尚未实现的syscall
+
+```rust
+fn ignore_unimplemented_syscall(syscall_num: usize) -> LinuxResult<isize> {
+    warn!("Ignored unimplemented syscall: {}", syscall_num);
+    Ok(0)
+}
+
+Sysno::gettid | Sysno::statfs | Sysno::rt_sigtimedwait | Sysno::prlimit64 => {
+            ignore_unimplemented_syscall(syscall_num)
+        }
+```
+
+#### utimensat
+
+尝试从 Starry-Old 迁移 utimensat
+
+git clone git@github.com:oscomp/DragonOS.git
+
+DragonOS 中，vfs 中的 Inode metadata 中有atime, mtime和ctime，utimensat可以直接修改他们。arceos里没有这些metadata
+
+
+    两种方式：第一是去patch当前的 vfs 然后加上 metadata 的支持，第二个就是fake实现，就像starry-old那样
+
+先延续 starry-old 的实现
+
+实际上存放在fd里的stat (metadata) 好像也没有实现 所以实际上还是要修改底层
+
+而且还要改fstat
+
+stat 基于 arceos_posix_api::FileLike 实现
+
+##### 尝试修改vfs 中的 VfsNodeAttr
+
+fork axfs_vfs
+
+# 3/22
+
+加入字段
+```
+pub struct VfsNodeAttr {
+    /// File permission mode.
+    mode: VfsNodePerm,
+    /// File type.
+    ty: VfsNodeType,
+    /// Total size, in bytes.
+    size: u64,
+    /// Number of 512B blocks allocated.
+    blocks: u64,
+    /// inode最后一次被访问的时间
+    atime: usize,
+    /// inode最后一次修改的时间
+    mtime: usize,
+}
+```
+
+由于我fork的不是arceos-org的axfs_vfs仓库，使用的依赖(axerrno)和原来不同，需要修改一下
+
+![](../../assets/note/image-45.png)
+
+要改的东西太多了，很多仓库都有axfs_vfs的依赖
+
+
+# 3/23
+
+#### Starry-Tutorial-Book
+
+```
+fork, clone https://github.com/Ressed/Starry-Tutorial-Book
+
+pip install -r requirements.txt
+
+mkdocs serve
+```
+
+先加入了一些 crate document 的链接进去
+
+#### utimensat
+
+重新 fork 了 arceos-org/axfs_crates
+
+在VfsNodeAttr, VfsNodeOps加入查询和修改 atime, mtime 的接口，类型都为usize
+
+自底向上地在axfs_lwext4_rust, axfs, arceos_posix_api 中加入相关函数，最终使得 syscall 可以修改 atime 和 mtime
+
+```
+impl VfsNodeOps for FileWrapper
+impl File
+impl FileLike for File
+```
+
+为什么不是所有的 fstat 都会调用 self.inner.lock().get_attr() ？
+
+因为测例操作的文件在 ramfs 里，是tmp文件
+
+ramfs 中 VfsNodeOps 修改 atime, mtime 还涉及到 mut，所以直接把 ramfs::FileNode 改成
+```
+pub struct FileNode {
+    content: RwLock<Vec<u8>>,
+    atime: usize,
+    mtime: usize,
+}
+```
+是不行的，因为 VfsNodeRef 是不可变的。
+
+改为仿照 content 来实现
+
+```
+pub struct FileNode {
+    content: RwLock<Vec<u8>>,
+    metadata: RwLock<Metadata>,
+}
+
+struct Metadata {
+    atime: usize,
+    mtime: usize,
+}
+```
+
+
+syscall 内 实现得较为麻烦，不知道有没有更好的写法
+
+```
+pub fn sys_utimensat(
+    dir_fd: i32,
+    path: UserConstPtr<c_char>,
+    times: UserConstPtr<timespec>,
+    _flags: i32,
+) -> LinuxResult<isize> {
+    if dir_fd != AT_FDCWD as _ && (dir_fd as isize) < 0 {
+        return Err(LinuxError::EBADF); // wrong dir_fd
+    }
+
+    let times = times.get_as_array(2)?;
+    let (atime, mtime): (timespec, timespec) = unsafe { (*times, *(times.add(1))) };
+    // FIXME: this is time elapsed since system boot, but not timestamp now
+    let current_s = axhal::time::monotonic_time_nanos() as i64 / 1000 / 1000;
+    let now = current_s as usize;
+    info!(
+        "sys_utimensat: dir_fd={}; atime=({}, {}); mtime=({}, {}); now={}",
+        dir_fd, atime.tv_sec, atime.tv_nsec, mtime.tv_sec, mtime.tv_nsec, now
+    );
+    // TODO: simplify the code
+    if (dir_fd as isize) > 0 {
+        let file = arceos_posix_api::get_file_like(dir_fd as _)?;
+        match atime.tv_nsec as _ {
+            UTIME_NOW => {
+                file.set_atime(now);
+            }
+            UTIME_OMIT => {}
+            _ => {
+                file.set_atime(atime.tv_sec as _);
+            }
+        };
+        match mtime.tv_nsec as _ {
+            UTIME_NOW => {
+                file.set_mtime(now);
+            }
+            UTIME_OMIT => {}
+            _ => {
+                file.set_mtime(mtime.tv_sec as _);
+            }
+        };
+    } else {
+        let file = axfs::fops::File::open(path.get_as_str()?, &axfs::fops::OpenOptions::new())
+            .map_err(|_| LinuxError::ENOTDIR)?;
+        match atime.tv_nsec as _ {
+            UTIME_NOW => {
+                file.set_atime(now);
+            }
+            UTIME_OMIT => {}
+            _ => {
+                file.set_atime(atime.tv_sec as _);
+            }
+        };
+        match mtime.tv_nsec as _ {
+            UTIME_NOW => {
+                file.set_mtime(now);
+            }
+            UTIME_OMIT => {}
+            _ => {
+                file.set_mtime(mtime.tv_sec as _);
+            }
+        };
+    };
+
+    Ok(0)
+}
+
+```
+
+至此 utime 可以通过
+
+修改外部仓库后 arceos 和 starry 都要进行 cargo update ，不然 CI 会不通过
