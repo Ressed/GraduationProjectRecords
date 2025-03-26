@@ -897,3 +897,65 @@ pub fn sys_utimensat(
 至此 utime 可以通过
 
 修改外部仓库后 arceos 和 starry 都要进行 cargo update ，不然 CI 会不通过
+
+
+# 3/26
+
+写了个脚本用来统计各个仓库中我的commit数量和修改文件行数。
+```
+#!/bin/bash
+
+# List of relative paths to the Git repositories
+repos=("starry-next" "starry-next/.arceos" "axfs_crates")  # Add more repositories here
+
+# User whose commits and modified lines we want to track
+user="Ressed"
+
+# Initialize total commit and modified lines counters
+total_commits=0
+total_lines_modified=0
+
+# Loop through each repository in the list
+for repo in "${repos[@]}"; do
+  echo "Processing repository: $repo"
+  
+  # Ensure we're in the correct directory and it's a valid git repo
+  if [ ! -d "$repo/.git" ]; then
+    echo "$repo is not a valid git repository"
+    continue
+  fi
+  
+  # Change to the repository directory
+  cd "$repo" || continue
+  
+  # Count commits by the user across all branches, excluding commits modifying more than 1000 lines
+  commits=0
+  lines_modified=0
+  for commit in $(git log --author="$user" --oneline --all --pretty=format:"%H"); do
+    # Count the number of added/modified lines in this commit
+    modified_lines=$(git show "$commit" --pretty=format:"" --unified=0 | grep -E "^\+" | wc -l)
+    
+    if [ "$modified_lines" -le 1000 ]; then
+      # Increment the commit count
+      commits=$((commits + 1))
+      
+      # Increment the total modified lines count
+      lines_modified=$((lines_modified + modified_lines))
+    fi
+  done
+  
+  # Update total counts
+  total_commits=$((total_commits + commits))
+  total_lines_modified=$((total_lines_modified + lines_modified))
+  
+  # Go back to the parent directory
+  cd ..
+  
+  echo "Commits by $user in $repo (excluding >1000 modified lines): $commits"
+  echo "Lines modified by $user in $repo (excluding >1000 modified lines): $lines_modified"
+done
+
+# Print total commit and modified lines
+echo "Total commits by $user (excluding >1000 modified lines): $total_commits"
+echo "Total lines modified by $user (excluding >1000 modified lines): $total_lines_modified"
+```
