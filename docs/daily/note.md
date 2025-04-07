@@ -790,7 +790,7 @@ mkdocs serve
 
 ```
 impl VfsNodeOps for FileWrapper
-impl File
+impl  
 impl FileLike for File
 ```
 
@@ -959,3 +959,37 @@ done
 echo "Total commits by $user (excluding >1000 modified lines): $total_commits"
 echo "Total lines modified by $user (excluding >1000 modified lines): $total_lines_modified"
 ```
+
+https://stackoverflow.com/questions/14392975/timestamp-accuracy-on-ext4-sub-millsecond
+
+# 3/27
+
+git clone https://github.com/LearningOS/oscomp-test-Ressed
+
+排行榜 https://learningos.cn/oscomptest-grading
+
+修改 main 的输出以及 testcase_list ，通过 basic 测例
+
+# 4/1
+
+修改 oscomp-test-Ressed 的文件结构，增加一级 starry-next 文件夹，方便直接clone其他仓库进行运行
+
+# 4/7
+
+给 starry-next 创建 oscomp-test 分支
+
+```
+git add submodule --branch ...
+```
+
+将.arceos 也作为 starry-next 的 submodule 
+
+修改 workflow 使其先 git submodule init 
+
+修改 makefile 在 starry-next 中 make
+
+由于submodule update 在workflow中需要权限，还是改为了直接clone
+
+将之前的 utime 合并，并且加入尚未实现的 syscall 的 bypass
+
+在 testcase_list 中加入 libctest 测例，通过一部分
