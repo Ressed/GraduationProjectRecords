@@ -993,3 +993,11 @@ git add submodule --branch ...
 将之前的 utime 合并，并且加入尚未实现的 syscall 的 bypass
 
 在 testcase_list 中加入 libctest 测例，通过一部分
+
+# 4/14
+
+### daemon_failure
+
+看起来在无限 loop syscall dup
+
+![](../../assets/note/image-46.png)
